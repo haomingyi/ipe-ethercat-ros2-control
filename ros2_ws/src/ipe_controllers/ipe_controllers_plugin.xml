@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<library path="ipe_cst_impedance_controller">
+  <class name="ipe_controllers/CstImpedanceController"
+         type="ipe_controllers::CstImpedanceController"
+         base_class_type="controller_interface::ControllerInterface">
+    <description>
+      Position/velocity impedance law that writes the IPE torque_raw CST interface.
+    </description>
+  </class>
+</library>

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ipe_single_joint">
+  <xacro:arg name="interface" default="enp130s0"/>
+  <xacro:arg name="zero_count" default="130336"/>
+  <xacro:arg name="direction" default="-1"/>
+  <xacro:arg name="velocity_raw_to_rad_s" default="2.3731138426448658e-7"/>
+  <xacro:arg name="use_mock_hardware" default="false"/>
+
+  <link name="base_link"/>
+  <joint name="ipe_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="flange_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="flange_link"/>
+
+  <ros2_control name="IpeThreeModeSystem" type="system">
+    <hardware>
+      <xacro:if value="$(arg use_mock_hardware)">
+        <plugin>mock_components/GenericSystem</plugin>
+        <param name="calculate_dynamics">false</param>
+      </xacro:if>
+      <xacro:unless value="$(arg use_mock_hardware)">
+        <plugin>ethercat_master/IpeThreeModeSystem</plugin>
+      <param name="interface">$(arg interface)</param>
+      <param name="zero_count">$(arg zero_count)</param>
+      <param name="direction">$(arg direction)</param>
+      <!-- Keep raw velocity/torque interfaces in the same ROS joint direction. -->
+      <param name="raw_direction">$(arg direction)</param>
+      <param name="motion_authorization">ENABLE_THREE_MODE_MOTION</param>
+
+      <param name="csp_max_travel_count">26214400</param>
+      <param name="csp_max_step_count">1200</param>
+      <param name="csp_max_following_error_count">16384</param>
+
+      <param name="csv_max_raw">13107200</param>
+      <param name="csv_max_step_raw">10000</param>
+      <param name="csv_max_travel_count">0</param>
+
+      <param name="cst_max_raw">300</param>
+      <!-- ros2_control writes at 100 Hz; 5 raw/cycle matches the proven
+           approximately 500 raw/s commissioning slew rate. -->
+      <param name="cst_max_step_raw">5</param>
+      <param name="cst_max_travel_count">0</param>
+      <param name="cst_slew_interval_cycles">1</param>
+
+      <param name="rated_velocity_raw">13107200</param>
+      <!-- 101:1 measured calibration. Replace this parameter for another ratio. -->
+      <param name="velocity_raw_to_rad_s">$(arg velocity_raw_to_rad_s)</param>
+      </xacro:unless>
+    </hardware>
+
+    <joint name="ipe_joint">
+      <command_interface name="position"/>
+      <command_interface name="velocity_raw"/>
+      <command_interface name="torque_raw"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity_raw"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="torque_raw"><param name="initial_value">0.0</param></state_interface>
+    </joint>
+  </ros2_control>
+</robot>

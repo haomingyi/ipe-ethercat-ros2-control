@@ -1,0 +1,55 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    ipe_cst_impedance_controller:
+      type: ipe_controllers/CstImpedanceController
+
+    ipe_position_controller:
+      type: position_controllers/JointGroupPositionController
+
+    ipe_velocity_raw_controller:
+      type: forward_command_controller/ForwardCommandController
+
+    ipe_torque_raw_controller:
+      type: forward_command_controller/ForwardCommandController
+
+joint_state_broadcaster:
+  ros__parameters:
+    joints: [ipe_joint]
+    interfaces: [position, velocity, velocity_raw, torque_raw]
+
+# This is the normal project CST controller. It starts inactive, and activation
+# holds the measured position until the reference manager provides a trajectory.
+ipe_cst_impedance_controller:
+  ros__parameters:
+    joint_name: ipe_joint
+    # Bench-calibrated starting values. The breakaway term overcomes the
+    # measured no-load dead zone while the existing 100 raw hard limit remains.
+    kp_raw_per_rad: 120.0
+    kd_raw_per_rad_s: 40.0
+    breakaway_raw: 60.0
+    position_deadband_rad: 0.01
+    breakaway_velocity_threshold_rad_s: 0.02
+    max_command_raw: 100.0
+    max_position_error_rad: 0.35
+    reference_timeout_sec: 0.20
+
+# The three controllers below are commissioning/manual fallbacks. Never activate
+# one of them at the same time as ipe_cst_impedance_controller.
+ipe_position_controller:
+  ros__parameters:
+    joints: [ipe_joint]
+
+ipe_velocity_raw_controller:
+  ros__parameters:
+    joints: [ipe_joint]
+    interface_name: velocity_raw
+
+ipe_torque_raw_controller:
+  ros__parameters:
+    joints: [ipe_joint]
+    interface_name: torque_raw

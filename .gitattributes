@@ -1,0 +1,7 @@
+# Keep binary assets out of textual diffs.
+*.pdf binary
+*.png binary
+*.lib binary
+
+# SOEM is vendored third-party source, not project-authored application code.
+ipe/SOEM/** linguist-vendored

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<robot name="ipe_single_joint">
+  <!-- Geometry and inertial values are intentionally omitted until the IPE
+       mechanical drawing is available. This URDF describes kinematics only. -->
+  <link name="base_link"/>
+
+  <joint name="ipe_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="flange_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <!-- Positive rotation follows the right-hand rule around +Z. -->
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <link name="flange_link"/>
+
+  <ros2_control name="IpeReadOnlySystem" type="system">
+    <hardware>
+      <plugin>ethercat_master/IpeReadOnlySystem</plugin>
+      <param name="interface">enp130s0</param>
+      <param name="zero_count">130336</param>
+      <param name="direction">-1</param>
+    </hardware>
+    <joint name="ipe_joint">
+      <state_interface name="position"/>
+      <!-- No command_interface: this ros2_control stage is read-only. -->
+    </joint>
+  </ros2_control>
+</robot>

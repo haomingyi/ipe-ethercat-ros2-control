@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>ipe_bringup</name>
+  <version>0.1.0</version>
+  <description>Production-style launch and configuration for the IPE joint.</description>
+  <maintainer email="124701939+haomingyi@users.noreply.github.com">Haoming</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>ethercat_master</exec_depend>
+  <exec_depend>forward_command_controller</exec_depend>
+  <exec_depend>hardware_interface</exec_depend>
+  <exec_depend>ipe_control</exec_depend>
+  <exec_depend>ipe_controllers</exec_depend>
+  <exec_depend>ipe_description</exec_depend>
+  <exec_depend>joint_state_broadcaster</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>position_controllers</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

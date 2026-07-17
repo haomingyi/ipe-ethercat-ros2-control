@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<library path="ipe_ros2_control_hardware">
+  <class name="ethercat_master/IpeReadOnlySystem"
+         type="ipe_ros2_control::IpeReadOnlySystem"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>Read-only single-joint IPE EtherCAT hardware interface.</description>
+  </class>
+  <class name="ethercat_master/IpeCspSystem"
+         type="ipe_ros2_control::IpeCspSystem"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Safety-limited single-joint IPE EtherCAT CSP position hardware interface.
+    </description>
+  </class>
+  <class name="ethercat_master/IpeThreeModeSystem"
+         type="ipe_ros2_control::IpeThreeModeSystem"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Safety-limited single-joint IPE EtherCAT CSP/CSV/CST hardware interface.
+    </description>
+  </class>
+</library>

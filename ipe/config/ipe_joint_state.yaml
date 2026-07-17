@@ -1,0 +1,12 @@
+ipe_joint_state_publisher:
+  ros__parameters:
+    interface: enp130s0
+    joint_name: ipe_joint
+    # Positive raw count was observed clockwise from the flange side. URDF +Z
+    # is counterclockwise from that view, so the ROS direction is inverted.
+    direction: -1
+    # Mechanical zero established by aligned housing/flange marks on
+    # 2026-07-14 and verified across a full power cycle (within 2 count).
+    startup_position_as_zero: false
+    zero_count: 130336
+    publish_rate_hz: 50.0

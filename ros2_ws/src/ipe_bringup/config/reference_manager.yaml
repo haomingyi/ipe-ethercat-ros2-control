@@ -1,0 +1,6 @@
+ipe_reference_manager:
+  ros__parameters:
+    joint_name: ipe_joint
+    publish_rate: 50.0
+    command_topic: /ipe/command
+    reference_topic: /ipe_cst_impedance_controller/reference

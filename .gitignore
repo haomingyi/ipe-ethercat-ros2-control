@@ -1,0 +1,51 @@
+# IDE and editor state
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+*.orig
+.DS_Store
+
+# CMake, colcon and ROS 2 generated output
+**/build/
+**/build-*/
+**/install/
+**/install-*/
+**/log/
+**/log-*/
+**/CMakeFiles/
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/Makefile
+compile_commands.json
+.cache/
+.pytest_cache/
+.coverage
+coverage/
+
+# Compiled files
+*.a
+*.o
+*.so
+*.so.*
+*.out
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Local archives and runtime evidence. These remain on the workstation.
+/archives/
+/artifacts/
+*.zip
+
+# Local credentials and machine-specific environment files
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
