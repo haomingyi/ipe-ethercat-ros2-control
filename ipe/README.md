@@ -10,7 +10,7 @@ robot application is launched from the repository root and documented in
 Build conservative tools:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control/ipe
+cd ~/ipe-ethercat-ros2-control/ipe
 cmake -S . -B build-safe -DCMAKE_BUILD_TYPE=Release
 cmake --build build-safe --target single_joint_lab ipe_joint_units_test -j
 ctest --test-dir build-safe --output-on-failure
@@ -46,7 +46,7 @@ The production workspace is `../ros2_ws`, not this directory's standalone instal
 tree. Build and start from the repository root:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 ./scripts/build_ros2_project.sh
 ./scripts/setup_project_capability.sh
 ./scripts/run_cst_project.sh

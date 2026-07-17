@@ -36,7 +36,7 @@ production application entry points.
 ## Build and launch
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 ./scripts/build_ros2_project.sh
 ./scripts/setup_project_capability.sh
 ```
@@ -45,7 +45,7 @@ Mock launch:
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-source ~/IPE-EtherCAT-ROS2-Control/ros2_ws/install/setup.bash
+source ~/ipe-ethercat-ros2-control/ros2_ws/install/setup.bash
 ros2 launch ipe_bringup ipe_cst_project.launch.py use_mock_hardware:=true
 ```
 

@@ -23,7 +23,7 @@ controller. Applications publish standard joint trajectories instead of fixed
 raw torque values.
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 ./scripts/build_ros2_project.sh
 ./scripts/setup_project_capability.sh
 ./scripts/run_cst_project.sh
@@ -62,7 +62,7 @@ different EtherCAT entry point.
 ## Quick production check with mock hardware
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 ./scripts/build_ros2_project.sh
 source /opt/ros/jazzy/setup.bash
 source ros2_ws/install/setup.bash
@@ -77,7 +77,7 @@ friction, gearing, or physical CST response.
 Interactive three-mode console:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 cmake -S adapter -B adapter/build -DCMAKE_BUILD_TYPE=Release
 cmake --build adapter/build -j
 ./scripts/run_three_mode_logged.sh enp130s0
@@ -86,7 +86,7 @@ cmake --build adapter/build -j
 Conservative single-joint monitor:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control/ipe
+cd ~/ipe-ethercat-ros2-control/ipe
 cmake -S . -B build-safe -DCMAKE_BUILD_TYPE=Release
 cmake --build build-safe --target single_joint_lab ipe_joint_units_test -j
 ctest --test-dir build-safe --output-on-failure

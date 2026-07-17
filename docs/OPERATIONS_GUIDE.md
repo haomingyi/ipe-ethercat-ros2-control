@@ -24,14 +24,14 @@ Production commands use:
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-source ~/IPE-EtherCAT-ROS2-Control/ros2_ws/install/setup.bash
+source ~/ipe-ethercat-ros2-control/ros2_ws/install/setup.bash
 ```
 
 Legacy `ipe/scripts/run_ipe_*.sh` commands use:
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-source ~/IPE-EtherCAT-ROS2-Control/ipe/install-ros2/setup.bash
+source ~/ipe-ethercat-ros2-control/ipe/install-ros2/setup.bash
 ```
 
 Paths containing `ros2_ws/install` are production. Paths containing
@@ -98,7 +98,7 @@ publishing one command; that does not stop the launch or controller.
 Run after the first checkout or after changing code, Xacro, or parameters:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 ./scripts/build_ros2_project.sh
 ./scripts/setup_project_capability.sh
 ```
@@ -111,7 +111,7 @@ project node. Re-run it if that executable is relinked and `getcap` becomes empt
 Terminal 1:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 source /opt/ros/jazzy/setup.bash
 source ros2_ws/install/setup.bash
 ros2 launch ipe_bringup ipe_cst_project.launch.py use_mock_hardware:=true
@@ -120,7 +120,7 @@ ros2 launch ipe_bringup ipe_cst_project.launch.py use_mock_hardware:=true
 Terminal 2:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 source /opt/ros/jazzy/setup.bash
 source ros2_ws/install/setup.bash
 
@@ -159,7 +159,7 @@ its original terminal with `quit` or `Ctrl+C`.
 ### Terminal 1: start and keep running
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 ./scripts/run_cst_project.sh
 ```
 
@@ -172,7 +172,7 @@ disabled until terminal 2 activates a motion controller.
 Prepare every new terminal:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 source /opt/ros/jazzy/setup.bash
 source ros2_ws/install/setup.bash
 ```
@@ -278,7 +278,7 @@ watching tracking error, current, and temperature.
 Interactive direct console:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control
+cd ~/ipe-ethercat-ros2-control
 ./scripts/run_three_mode_logged.sh enp130s0
 ```
 
@@ -288,14 +288,14 @@ EtherCAT connection. Do not run a ROS EtherCAT launch at the same time.
 Conservative single-joint monitor:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control/ipe
+cd ~/ipe-ethercat-ros2-control/ipe
 sudo ./build-safe/single_joint_lab monitor
 ```
 
 The legacy ros2_control three-mode launch is:
 
 ```bash
-cd ~/IPE-EtherCAT-ROS2-Control/ipe
+cd ~/ipe-ethercat-ros2-control/ipe
 ./scripts/run_ipe_three_mode_control.sh
 ```
 
