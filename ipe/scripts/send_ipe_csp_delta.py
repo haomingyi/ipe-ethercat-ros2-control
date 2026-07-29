@@ -39,7 +39,7 @@ def main() -> int:
         "--degrees",
         type=float,
         required=True,
-        help="relative ROS angle, range +/-1 degree (legacy CSP controller)",
+        help="relative ROS angle, range +/-1 degree (standalone CSP controller)",
     )
     arguments, ros_arguments = parser.parse_known_args()
     if (

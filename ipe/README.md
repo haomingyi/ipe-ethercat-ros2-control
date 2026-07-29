@@ -56,7 +56,7 @@ It provides a standard trajectory input, reference interpolation, a real-time CS
 impedance controller, and the `IpeThreeModeSystem` hardware plugin. Do not source
 `ipe/install-ros2` when operating the production application.
 
-## Legacy ROS 2 read-only state publisher
+## ROS 2 read-only state publisher
 
 Build this package independently for low-level diagnostics:
 
