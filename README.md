@@ -65,7 +65,7 @@ The checked-in configuration targets the bench-tested setup below.
 | Product ID | `0x00009253` |
 | Encoder | 18-bit absolute, 262,144 count per encoder revolution |
 | Measured reduction ratio | Approximately 101:1 |
-| Network interface | `enp130s0` by default; configurable at launch |
+| Network interface | Configured per workstation in `.env` |
 | ROS distribution | ROS 2 Jazzy |
 | Host platform | Linux |
 
@@ -80,7 +80,7 @@ compatible. Verify the device profile before enabling motion.
 | Run application trajectories | Main CST launch | Yes | After controller activation |
 | Commission CSP/CSV/CST directly | `ipe_three_mode_lab` | Yes | Yes |
 | Inspect/reset/hold a joint conservatively | `single_joint_lab` | Yes | Command dependent |
-| Read state only | Read-only ROS node/plugin | Yes | No |
+| Read state only | `single_joint_lab monitor` | Yes | No |
 
 Exactly one process may own the EtherCAT interface. Never run the main launch,
 the commissioning console, and a standalone tool at the same time.
@@ -103,6 +103,63 @@ the commissioning console, and a standalone tool at the same time.
 See [Repository Structure and Ownership](docs/PROJECT_LAYOUT.md) for the
 file-level map.
 
+## New-computer setup
+
+The repository contains every project source dependency required for the Linux
+build, including SOEM. Build output and workstation settings are deliberately
+regenerated on each computer.
+
+```bash
+git clone https://github.com/haomingyi/ipe-ethercat-ros2-control.git
+cd ipe-ethercat-ros2-control
+cp .env.example .env
+```
+
+Edit `.env` for the new computer:
+
+```dotenv
+IPE_ROS_DISTRO=jazzy
+IPE_ROS_SETUP=/opt/ros/jazzy/setup.bash
+IPE_INTERFACE=enp130s0
+IPE_ZERO_COUNT=130336
+IPE_DIRECTION=-1
+IPE_VELOCITY_RAW_TO_RAD_S=2.3731138426448658e-7
+```
+
+Find the new network-interface name with `ip -brief link`; it does not need to
+match the original workstation.
+
+Install declared dependencies and validate the host:
+
+```bash
+./scripts/install_dependencies.sh
+./scripts/check_system.sh
+```
+
+Then build and test:
+
+```bash
+./scripts/build_ros2_project.sh
+./scripts/test_project.sh
+```
+
+Run the software-only system before connecting hardware:
+
+```bash
+./scripts/run_mock_project.sh
+```
+
+For physical operation, grant capabilities to the newly linked executable and
+check the network link:
+
+```bash
+./scripts/setup_project_capability.sh
+./scripts/check_system.sh --hardware
+```
+
+This sequence is the supported migration path. Never copy `build`, `install`,
+or `log` directories from another computer.
+
 ## Prerequisites
 
 - Ubuntu/Linux with ROS 2 Jazzy installed under `/opt/ros/jazzy`
@@ -113,11 +170,9 @@ file-level map.
 - A mechanically secured joint and an independent emergency power cut for
   physical tests
 
-## Build
+## Build only
 
 ```bash
-git clone https://github.com/haomingyi/ipe-ethercat-ros2-control.git
-cd ipe-ethercat-ros2-control
 ./scripts/build_ros2_project.sh
 ```
 
@@ -142,16 +197,15 @@ application commands without opening the Ethernet interface.
 Terminal 1:
 
 ```bash
-source /opt/ros/jazzy/setup.bash
-source ros2_ws/install/setup.bash
-ros2 launch ipe_bringup ipe_cst_project.launch.py use_mock_hardware:=true
+./scripts/run_mock_project.sh
 ```
 
 Terminal 2:
 
 ```bash
-source /opt/ros/jazzy/setup.bash
-source ros2_ws/install/setup.bash
+source scripts/project_env.sh
+ipe_source_ros
+ipe_source_workspace
 
 ros2 control list_controllers
 ros2 control switch_controllers \
@@ -192,8 +246,9 @@ Start the complete hardware application in terminal 1:
 In terminal 2, load the environment and inspect the initial state:
 
 ```bash
-source /opt/ros/jazzy/setup.bash
-source ros2_ws/install/setup.bash
+source scripts/project_env.sh
+ipe_source_ros
+ipe_source_workspace
 
 ros2 control list_hardware_components -v
 ros2 control list_controllers
@@ -280,7 +335,7 @@ Build and start the persistent three-mode console:
 ```bash
 cmake -S adapter -B adapter/build -DCMAKE_BUILD_TYPE=Release
 cmake --build adapter/build -j
-./scripts/run_three_mode_logged.sh enp130s0
+./scripts/run_three_mode_logged.sh
 ```
 
 Build the conservative standalone tool:
@@ -299,7 +354,8 @@ and [Single-Joint Learning Guide](ipe/IPE_LEARNING_GUIDE.md) first.
 
 ## Configuration
 
-The main deployment configuration is concentrated in:
+Workstation-specific configuration is stored in the ignored `.env` file copied
+from `.env.example`. Project behavior is concentrated in:
 
 - `ros2_ws/src/ipe_description/urdf/ipe_single_joint.urdf.xacro`: interface,
   zero count, direction, hardware backend, and hardware limits
@@ -313,27 +369,10 @@ are not validated parameters for a loaded robot.
 
 ## Validation
 
-Run the repository boundary check:
+Run the complete non-hardware validation:
 
 ```bash
-./scripts/check_repository.sh
-```
-
-Run standalone conversion tests:
-
-```bash
-ctest --test-dir ipe/build-safe --output-on-failure
-```
-
-Run ROS 2 package tests:
-
-```bash
-source /opt/ros/jazzy/setup.bash
-colcon test \
-  --base-paths ros2_ws/src \
-  --build-base ros2_ws/build \
-  --install-base ros2_ws/install
-colcon test-result --test-result-base ros2_ws/build --verbose
+./scripts/test_project.sh
 ```
 
 Hardware movement is never part of an unattended automated test.
@@ -358,6 +397,7 @@ Hardware movement is never part of an unattended automated test.
 - [Repository Structure and Ownership](docs/PROJECT_LAYOUT.md)
 - [Hardware Profile](docs/hardware/DEVICE_PROFILE.md)
 - [Safety Checklist](docs/SAFETY.md)
+- [Migration and Reproducibility](docs/MIGRATION.md)
 - [Contributing](CONTRIBUTING.md)
 
 ## Licensing and provenance

@@ -44,42 +44,30 @@ add_executable(ipe_joint_units_test tests/ipe_joint_units_test.cpp)
 enable_testing()
 add_test(NAME ipe_joint_units_test COMMAND ipe_joint_units_test)
 
-# ROS 2 is optional for the standalone EtherCAT learning tools. When an ROS 2
-# environment is sourced, also build the passive /joint_states publisher.
+# ROS 2 is optional for the standalone EtherCAT commissioning tool.
 find_package(ament_cmake QUIET)
 if(ament_cmake_FOUND)
     find_package(rclcpp REQUIRED)
-    find_package(sensor_msgs REQUIRED)
     find_package(hardware_interface REQUIRED)
     find_package(pluginlib REQUIRED)
     find_package(controller_manager REQUIRED)
     find_package(realtime_tools REQUIRED)
 
-    add_executable(ipe_joint_state_publisher
-        src/ipe_joint_state_publisher.cpp ${IPE_ETHERCAT_CORE_SRC} ${SOEM_SRC})
-    ament_target_dependencies(ipe_joint_state_publisher rclcpp sensor_msgs)
-    target_link_libraries(ipe_joint_state_publisher pthread)
-
     # A file capability puts glibc's loader in secure-execution mode, where
     # LD_LIBRARY_PATH is ignored. Use legacy DT_RPATH so the ROS library path
     # also applies to transitive dependencies such as
     # liblibstatistics_collector.so.
-    set(IPE_ROS_LIBRARY_DIR "/opt/ros/$ENV{ROS_DISTRO}/lib")
+    get_filename_component(
+        IPE_ROS_PREFIX "${rclcpp_DIR}/../../.." ABSOLUTE)
+    set(IPE_ROS_LIBRARY_DIR "${IPE_ROS_PREFIX}/lib")
     set(IPE_ROS_SECURE_RPATH
         "${IPE_ROS_LIBRARY_DIR}"
         "${IPE_ROS_LIBRARY_DIR}/x86_64-linux-gnu"
-        "/opt/ros/$ENV{ROS_DISTRO}/opt/sdformat_vendor/lib"
-        "/opt/ros/$ENV{ROS_DISTRO}/opt/gz_math_vendor/lib"
-        "/opt/ros/$ENV{ROS_DISTRO}/opt/gz_utils_vendor/lib")
-    target_link_options(ipe_joint_state_publisher PRIVATE
-        "-Wl,--disable-new-dtags")
-    set_target_properties(ipe_joint_state_publisher PROPERTIES
-        BUILD_RPATH "${IPE_ROS_SECURE_RPATH}"
-        INSTALL_RPATH "${IPE_ROS_SECURE_RPATH}")
+        "${IPE_ROS_PREFIX}/opt/sdformat_vendor/lib"
+        "${IPE_ROS_PREFIX}/opt/gz_math_vendor/lib"
+        "${IPE_ROS_PREFIX}/opt/gz_utils_vendor/lib")
 
     add_library(ipe_ros2_control_hardware SHARED
-        src/ipe_ros2_control_hardware.cpp
-        src/ipe_csp_ros2_control_hardware.cpp
         src/ipe_three_mode_ros2_control_hardware.cpp
         ${IPE_ETHERCAT_CORE_SRC} ${SOEM_SRC})
     add_executable(ipe_ros2_control_node
@@ -98,26 +86,11 @@ if(ament_cmake_FOUND)
     pluginlib_export_plugin_description_file(
         hardware_interface ipe_ros2_control_plugin.xml)
 
-    install(TARGETS ipe_joint_state_publisher
-        ipe_ros2_control_node
+    install(TARGETS ipe_ros2_control_node
         DESTINATION lib/${PROJECT_NAME})
     install(TARGETS ipe_ros2_control_hardware
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin)
-    install(DIRECTORY config launch urdf
-        DESTINATION share/${PROJECT_NAME})
-    install(PROGRAMS scripts/send_ipe_csp_delta.py
-        DESTINATION lib/${PROJECT_NAME}
-        RENAME send_ipe_csp_delta)
-    install(PROGRAMS scripts/send_ipe_csp_trajectory.py
-        DESTINATION lib/${PROJECT_NAME}
-        RENAME send_ipe_csp_trajectory)
-    install(PROGRAMS scripts/ipe_cst_session.py
-        DESTINATION lib/${PROJECT_NAME}
-        RENAME ipe_cst_session)
-    install(PROGRAMS scripts/send_ipe_raw_pulse.py
-        DESTINATION lib/${PROJECT_NAME}
-        RENAME send_ipe_raw_pulse)
     ament_package()
 endif()

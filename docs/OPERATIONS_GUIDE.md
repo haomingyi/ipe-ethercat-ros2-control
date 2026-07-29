@@ -11,31 +11,24 @@ normal robot work. Every other entry point is a commissioning or diagnostic tool
 | Develop ROS nodes and controller wiring | Production launch with mock hardware | No | Daily software development |
 | Execute joint trajectories | Production CST application | Yes | Normal robot application |
 | Verify CSP, CSV, or CST independently | `adapter/ipe_three_mode_lab` | Yes | Low-level commissioning |
-| Diagnose compatibility ros2_control interfaces | Three-mode compatibility launch | Yes | Compatibility and diagnosis |
-| Read joint feedback only | Read-only node or plugin | Yes | Diagnosis |
+| Read joint feedback only | `single_joint_lab monitor` | Yes | Diagnosis |
 | Reset, hold, or move a few counts | `single_joint_lab` | Yes | Initial learning and repair |
 
-Never start two entries simultaneously. SOEM owns `enp130s0` directly, and only
-one EtherCAT master may use that interface.
+Never start two entries simultaneously. SOEM owns the interface configured by
+`IPE_INTERFACE`, and only one EtherCAT master may use it.
 
-## Do not mix the two ROS environments
+## Load the project environment
 
-Production commands use:
-
-```bash
-source /opt/ros/jazzy/setup.bash
-source ~/ipe-ethercat-ros2-control/ros2_ws/install/setup.bash
-```
-
-Standalone `ipe/scripts/run_ipe_*.sh` commands use:
+Every terminal uses the same repository-local helpers:
 
 ```bash
-source /opt/ros/jazzy/setup.bash
-source ~/ipe-ethercat-ros2-control/ipe/install-ros2/setup.bash
+source scripts/project_env.sh
+ipe_source_ros
+ipe_source_workspace
 ```
 
-Paths containing `ros2_ws/install` are production. Paths containing
-`ipe/install-ros2` are standalone commissioning.
+`project_env.sh` loads `.env` when it exists, so ROS location, network interface,
+zero, direction, and velocity scale are consistent across scripts.
 
 ## Production controllers
 
@@ -99,6 +92,8 @@ Run after the first checkout or after changing code, Xacro, or parameters:
 
 ```bash
 cd ~/ipe-ethercat-ros2-control
+cp .env.example .env
+./scripts/check_system.sh
 ./scripts/build_ros2_project.sh
 ./scripts/setup_project_capability.sh
 ```
@@ -112,17 +107,16 @@ Terminal 1:
 
 ```bash
 cd ~/ipe-ethercat-ros2-control
-source /opt/ros/jazzy/setup.bash
-source ros2_ws/install/setup.bash
-ros2 launch ipe_bringup ipe_cst_project.launch.py use_mock_hardware:=true
+./scripts/run_mock_project.sh
 ```
 
 Terminal 2:
 
 ```bash
 cd ~/ipe-ethercat-ros2-control
-source /opt/ros/jazzy/setup.bash
-source ros2_ws/install/setup.bash
+source scripts/project_env.sh
+ipe_source_ros
+ipe_source_workspace
 
 ros2 control list_controllers
 ros2 control switch_controllers \
@@ -150,7 +144,7 @@ verify that no center-bore cable can be wound. Keep hands outside the motion pat
 Check for an existing master:
 
 ```bash
-pgrep -af 'single_joint_lab|ipe_three_mode_lab|ipe_joint_state_publisher|ipe_ros2_control_node'
+pgrep -af 'single_joint_lab|ipe_three_mode_lab|ipe_ros2_control_node'
 ```
 
 No output means no master is running. If a process appears, exit it normally in
@@ -173,8 +167,9 @@ Prepare every new terminal:
 
 ```bash
 cd ~/ipe-ethercat-ros2-control
-source /opt/ros/jazzy/setup.bash
-source ros2_ws/install/setup.bash
+source scripts/project_env.sh
+ipe_source_ros
+ipe_source_workspace
 ```
 
 Inspect the system:
@@ -279,7 +274,7 @@ Interactive direct console:
 
 ```bash
 cd ~/ipe-ethercat-ros2-control
-./scripts/run_three_mode_logged.sh enp130s0
+./scripts/run_three_mode_logged.sh
 ```
 
 It runs `adapter/build/ipe_three_mode_lab` and switches CSP/CSV/CST within one
@@ -292,27 +287,17 @@ cd ~/ipe-ethercat-ros2-control/ipe
 sudo ./build-safe/single_joint_lab monitor
 ```
 
-The standalone ros2_control three-mode launch is:
-
-```bash
-cd ~/ipe-ethercat-ros2-control/ipe
-./scripts/run_ipe_three_mode_control.sh
-```
-
-Its utilities are `send_ipe_csp_trajectory`, `send_ipe_raw_pulse`, and
-`ipe_cst_session`. They use `ipe/install-ros2/setup.bash` and are not production
-commands. Never run `ipe_cst_session` while the production impedance controller
-is active.
-
-Read-only compatibility entry points are `run_ipe_joint_state_publisher.sh` and
-`run_ipe_ros2_control.sh`; neither is a motion interface.
-
 ## Root script index
 
 | Script | Purpose | Motion behavior |
 | --- | --- | --- |
+| `install_dependencies.sh` | Install Ubuntu and rosdep dependencies | No motion |
+| `check_system.sh` | Validate software; optionally validate hardware link | No motion |
+| `clean_workspace.sh` | Remove generated output after moving a checkout | No motion |
 | `build_ros2_project.sh` | Build production workspace | No motion |
+| `test_project.sh` | Run hardware-free validation | No motion |
 | `setup_project_capability.sh` | Set executable capabilities | No motion |
+| `run_mock_project.sh` | Start the software-only application | No motion |
 | `run_cst_project.sh` | Start physical production launch | No motion until activation |
 | `run_three_mode_logged.sh` | Start direct commissioning console | Can move after commands |
 | `check_repository.sh` | Check publication boundary | No motion |

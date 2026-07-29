@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-workspace="${project_dir}/ros2_ws"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=project_env.sh
+source "${script_dir}/project_env.sh"
 
-set +u
-source /opt/ros/jazzy/setup.bash
-set -u
+ipe_source_ros
 
-cd "${workspace}"
+cd "${IPE_WORKSPACE}"
 colcon --log-base log build \
-  --base-paths "${project_dir}/ipe" "${workspace}/src" \
+  --base-paths "${IPE_PROJECT_DIR}/ipe" "${IPE_WORKSPACE}/src" \
   --build-base build \
   --install-base install \
   --symlink-install \

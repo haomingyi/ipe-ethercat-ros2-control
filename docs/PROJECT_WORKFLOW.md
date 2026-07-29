@@ -30,8 +30,8 @@ Planner or task
 | `ipe_control` | Trajectory validation, interpolation, command utility |
 | `ipe_bringup` | Unified launch and deployment parameters |
 
-`adapter`, `single_joint_lab`, and `ipe_cst_session` are commissioning tools, not
-production application entry points.
+`adapter` and `single_joint_lab` are commissioning tools, not application entry
+points.
 
 ## Build and launch
 
@@ -44,9 +44,7 @@ cd ~/ipe-ethercat-ros2-control
 Mock launch:
 
 ```bash
-source /opt/ros/jazzy/setup.bash
-source ~/ipe-ethercat-ros2-control/ros2_ws/install/setup.bash
-ros2 launch ipe_bringup ipe_cst_project.launch.py use_mock_hardware:=true
+./scripts/run_mock_project.sh
 ```
 
 Physical launch:
@@ -122,10 +120,10 @@ gain sets, and reference arrays while preserving the same layer boundaries.
 
 ## Entry-point boundary
 
-- `ipe_cst_session`: manual fixed-raw commissioning.
-- `send_ipe_raw_pulse`: short auto-zeroing validation pulse.
-- `ipe_cst_impedance_controller`: production real-time closed loop.
-- `/ipe/command`: production application API.
+- `ipe_three_mode_lab`: direct CSP/CSV/CST commissioning.
+- `single_joint_lab`: conservative passive and bounded diagnostics.
+- `ipe_cst_impedance_controller`: application real-time closed loop.
+- `/ipe/command`: application command API.
 
 Only one hardware launch may run. Exit one backend completely before switching
 between mock, application-level physical hardware, and standalone commissioning.
