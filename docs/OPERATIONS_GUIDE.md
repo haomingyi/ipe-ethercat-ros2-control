@@ -1,4 +1,4 @@
-# Unified IPE Joint Operations Guide
+# Operations Guide
 
 This guide explains which program to start, what every controller does, and
 which terminal should run each command. Use the production CST application for
@@ -11,7 +11,7 @@ normal robot work. Every other entry point is a commissioning or diagnostic tool
 | Develop ROS nodes and controller wiring | Production launch with mock hardware | No | Daily software development |
 | Execute joint trajectories | Production CST application | Yes | Normal robot application |
 | Verify CSP, CSV, or CST independently | `adapter/ipe_three_mode_lab` | Yes | Low-level commissioning |
-| Diagnose legacy ros2_control interfaces | Legacy three-mode launch | Yes | Compatibility and diagnosis |
+| Diagnose compatibility ros2_control interfaces | Three-mode compatibility launch | Yes | Compatibility and diagnosis |
 | Read joint feedback only | Read-only node or plugin | Yes | Diagnosis |
 | Reset, hold, or move a few counts | `single_joint_lab` | Yes | Initial learning and repair |
 
@@ -27,7 +27,7 @@ source /opt/ros/jazzy/setup.bash
 source ~/ipe-ethercat-ros2-control/ros2_ws/install/setup.bash
 ```
 
-Legacy `ipe/scripts/run_ipe_*.sh` commands use:
+Standalone `ipe/scripts/run_ipe_*.sh` commands use:
 
 ```bash
 source /opt/ros/jazzy/setup.bash
@@ -35,7 +35,7 @@ source ~/ipe-ethercat-ros2-control/ipe/install-ros2/setup.bash
 ```
 
 Paths containing `ros2_ws/install` are production. Paths containing
-`ipe/install-ros2` are legacy commissioning.
+`ipe/install-ros2` are standalone commissioning.
 
 ## Production controllers
 
@@ -292,7 +292,7 @@ cd ~/ipe-ethercat-ros2-control/ipe
 sudo ./build-safe/single_joint_lab monitor
 ```
 
-The legacy ros2_control three-mode launch is:
+The standalone ros2_control three-mode launch is:
 
 ```bash
 cd ~/ipe-ethercat-ros2-control/ipe
@@ -304,7 +304,7 @@ Its utilities are `send_ipe_csp_trajectory`, `send_ipe_raw_pulse`, and
 commands. Never run `ipe_cst_session` while the production impedance controller
 is active.
 
-Read-only legacy entry points are `run_ipe_joint_state_publisher.sh` and
+Read-only compatibility entry points are `run_ipe_joint_state_publisher.sh` and
 `run_ipe_ros2_control.sh`; neither is a motion interface.
 
 ## Root script index

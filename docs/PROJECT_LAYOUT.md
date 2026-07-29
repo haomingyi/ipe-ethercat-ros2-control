@@ -1,4 +1,4 @@
-# Project File Index
+# Repository Structure and Ownership
 
 ## Production robot application
 

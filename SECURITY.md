@@ -1,4 +1,4 @@
-# Security and privacy
+# Security and Operational Safety
 
 Do not commit raw device captures, serial numbers, terminal logs, credentials, private
 keys, machine environment files, or build/install trees. Store local evidence under

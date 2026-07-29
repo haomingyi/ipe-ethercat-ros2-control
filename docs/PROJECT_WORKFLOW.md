@@ -128,4 +128,4 @@ gain sets, and reference arrays while preserving the same layer boundaries.
 - `/ipe/command`: production application API.
 
 Only one hardware launch may run. Exit one backend completely before switching
-between mock, production physical hardware, and legacy commissioning.
+between mock, application-level physical hardware, and standalone commissioning.
