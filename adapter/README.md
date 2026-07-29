@@ -1,20 +1,20 @@
 # IPE single-joint three-mode adapter
 
-This directory is an independent adapter for the directly connected
-IPE IRGML-14-I. It does not replace or edit files under `../ipe`; the original
-archive is retained locally under `../archives/` and excluded from Git.
+This directory contains the direct commissioning adapter for one connected IPE
+IRGML-14-I. It reuses the canonical EtherCAT core under `../ipe`.
 
 Build and start the long-running console from the repository root:
 
 ```bash
 cmake -S adapter -B adapter/build -DCMAKE_BUILD_TYPE=Release
 cmake --build adapter/build -j
-./scripts/run_three_mode_logged.sh enp130s0
+./scripts/run_three_mode_logged.sh
 ```
 
 The wrapper uses `script` to keep an unbuffered local terminal transcript at
 `../artifacts/test-logs/three_mode_latest.log`. The log is excluded from Git.
-Run `sudo ./adapter/build/ipe_three_mode_lab enp130s0` directly only when a
+The wrapper reads `IPE_INTERFACE` from the repository `.env`. Run
+`sudo ./adapter/build/ipe_three_mode_lab <interface>` directly only when a
 transcript is not wanted.
 
 The console keeps one EtherCAT connection open and switches the mapped

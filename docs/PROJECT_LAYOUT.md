@@ -9,6 +9,8 @@
 | `ros2_ws/src/ipe_control/` | Standard trajectory handling and application commands |
 | `ros2_ws/src/ipe_bringup/` | Unified launch and controller parameters |
 | `scripts/build_ros2_project.sh` | Build the complete multi-package workspace |
+| `scripts/check_system.sh` | Validate a new workstation and optional hardware link |
+| `scripts/test_project.sh` | Run all hardware-free project tests |
 | `scripts/run_cst_project.sh` | Start the production physical-joint application |
 | `docs/OPERATIONS_GUIDE.md` | Controller, script, terminal, and shutdown instructions |
 | `docs/PROJECT_WORKFLOW.md` | Architecture, deployment, and extension guidance |
@@ -44,14 +46,9 @@ Only `ros2_ws/src/` and workspace documentation are committed. `build/`,
 
 | File | Purpose |
 | --- | --- |
-| `ipe/src/ipe_ros2_control_hardware.cpp` | Read-only hardware plugin |
-| `ipe/src/ipe_csp_ros2_control_hardware.cpp` | Standalone bounded CSP plugin |
 | `ipe/src/ipe_three_mode_ros2_control_hardware.cpp` | Mutually exclusive CSP/CSV/CST plugin |
 | `ipe/src/ipe_ros2_control_node.cpp` | Project controller-manager process |
 | `ipe/ipe_ros2_control_plugin.xml` | pluginlib registration |
-| `ipe/config/` | Controller-manager parameter files |
-| `ipe/launch/` | Read-only and commissioning launch files |
-| `ipe/scripts/` | Command, capability, and launch helpers |
 
 ## Local-only paths
 

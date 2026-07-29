@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-binary="${project_dir}/adapter/build/ipe_three_mode_lab"
-interface="${1:-enp130s0}"
-log_dir="${project_dir}/artifacts/test-logs"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=project_env.sh
+source "${script_dir}/project_env.sh"
+binary="${IPE_PROJECT_DIR}/adapter/build/ipe_three_mode_lab"
+interface="${1:-${IPE_INTERFACE}}"
+log_dir="${IPE_PROJECT_DIR}/artifacts/test-logs"
 timestamp="$(date +%Y%m%d-%H%M%S)"
 session_log="${log_dir}/three_mode_${timestamp}.log"
 latest_log="${log_dir}/three_mode_latest.log"

@@ -8,16 +8,17 @@ commissioning tool, not the production ROS 2 application.
 - The joint body is fixed and the flange workspace is clear.
 - A 48 V-class supply is configured with an appropriate current limit.
 - An emergency power disconnect is reachable.
-- `enp130s0` is connected directly to one IPE EtherCAT joint.
+- The interface configured as `IPE_INTERFACE` is connected directly to one IPE
+  EtherCAT joint.
 - No other EtherCAT master is running.
 
 ## Build
 
 ```bash
-cd ~/ipe-ethercat-ros2-control/ipe
-cmake -S . -B build-safe -DCMAKE_BUILD_TYPE=Release
-cmake --build build-safe --target single_joint_lab ipe_joint_units_test -j
-ctest --test-dir build-safe --output-on-failure
+cd ~/ipe-ethercat-ros2-control
+cmake -S ipe -B ipe/build-safe -DCMAKE_BUILD_TYPE=Release
+cmake --build ipe/build-safe --target single_joint_lab ipe_joint_units_test -j
+ctest --test-dir ipe/build-safe --output-on-failure
 ```
 
 `cmake -S . -B build-safe` configures a separate build directory.
@@ -38,7 +39,10 @@ mode_probe    Check whether a cyclic mode can be selected while disabled
 Run the monitor first after every power cycle:
 
 ```bash
-sudo ./build-safe/single_joint_lab monitor
+source scripts/project_env.sh
+sudo ./ipe/build-safe/single_joint_lab \
+  --interface "${IPE_INTERFACE}" \
+  monitor
 ```
 
 Expected healthy indicators include one slave, EtherCAT OP, WKC `3/3`, and
@@ -88,7 +92,7 @@ as a communication-watchdog latch. A reset clears the stored fault condition; it
 does not solve a broken cable, duplicate master, or unhealthy PDO exchange.
 
 ```bash
-sudo ./build-safe/single_joint_lab reset
+sudo ./ipe/build-safe/single_joint_lab --interface "${IPE_INTERFACE}" reset
 ```
 
 Only reset after checking the status and physical connection. Repeated automatic
@@ -97,7 +101,7 @@ fault reset is intentionally disabled.
 ## Hold test
 
 ```bash
-sudo ./build-safe/single_joint_lab hold
+sudo ./ipe/build-safe/single_joint_lab --interface "${IPE_INTERFACE}" hold
 ```
 
 Follow the terminal confirmations exactly. The utility primes the target with the
@@ -107,8 +111,8 @@ healthy result reaches `Operation enabled` and holds the current position.
 ## Bounded movement
 
 ```bash
-sudo ./build-safe/single_joint_lab move 500
-sudo ./build-safe/single_joint_lab move -500
+sudo ./ipe/build-safe/single_joint_lab --interface "${IPE_INTERFACE}" move 500
+sudo ./ipe/build-safe/single_joint_lab --interface "${IPE_INTERFACE}" move -500
 ```
 
 Do not type angle brackets. Documentation notation such as `move <count>` means
@@ -122,7 +126,7 @@ the output-flange angle.
 ## Interactive session
 
 ```bash
-sudo ./build-safe/single_joint_lab session
+sudo ./ipe/build-safe/single_joint_lab --interface "${IPE_INTERFACE}" session
 ```
 
 The session keeps one connection alive and avoids watchdog faults caused by
@@ -140,7 +144,7 @@ The direct adapter console is better for comparing all three modes:
 
 ```bash
 cd ~/ipe-ethercat-ros2-control
-./scripts/run_three_mode_logged.sh enp130s0
+./scripts/run_three_mode_logged.sh
 ```
 
 Use the production ROS application only after low-level identity, PDO, direction,
@@ -149,7 +153,7 @@ and basic motion have been established.
 ## Power-cycle procedure
 
 1. Turn on the supply and wait for the drive to boot.
-2. Check link LEDs and `ip link show enp130s0`.
+2. Check link LEDs and `ip link show "${IPE_INTERFACE}"`.
 3. Confirm that no other master process is running.
 4. Run `monitor` and verify slave identity, OP, WKC, PDO, status, and error.
 5. Reset only if the drive is in Fault.

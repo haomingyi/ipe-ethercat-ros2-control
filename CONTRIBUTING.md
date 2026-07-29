@@ -33,31 +33,10 @@ Build the complete workspace:
 ./scripts/build_ros2_project.sh
 ```
 
-Run ROS tests:
+Run all hardware-free tests:
 
 ```bash
-source /opt/ros/jazzy/setup.bash
-colcon test \
-  --base-paths ros2_ws/src \
-  --build-base ros2_ws/build \
-  --install-base ros2_ws/install
-colcon test-result --test-result-base ros2_ws/build --verbose
-```
-
-Run the standalone tests:
-
-```bash
-cmake -S ipe -B ipe/build-safe -DCMAKE_BUILD_TYPE=Release
-cmake --build ipe/build-safe \
-  --target single_joint_lab ipe_joint_units_test \
-  -j
-ctest --test-dir ipe/build-safe --output-on-failure
-```
-
-Check the publication boundary:
-
-```bash
-./scripts/check_repository.sh
+./scripts/test_project.sh
 ```
 
 ## Hardware-affecting changes

@@ -3,29 +3,17 @@
 <package format="3">
   <name>ethercat_master</name>
   <version>0.1.0</version>
-  <description>Safe single-joint IPE EtherCAT learning tools and ROS 2 integration</description>
+  <description>IPE EtherCAT core and three-mode ros2_control hardware interface</description>
   <maintainer email="124701939+haomingyi@users.noreply.github.com">Haoming</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
-  <depend>sensor_msgs</depend>
-  <depend>std_msgs</depend>
   <depend>hardware_interface</depend>
   <depend>pluginlib</depend>
   <depend>controller_manager</depend>
   <depend>realtime_tools</depend>
-
-  <exec_depend>ament_index_python</exec_depend>
-  <exec_depend>joint_state_broadcaster</exec_depend>
-  <exec_depend>position_controllers</exec_depend>
-  <exec_depend>forward_command_controller</exec_depend>
-  <exec_depend>controller_manager_msgs</exec_depend>
-  <exec_depend>control_msgs</exec_depend>
-  <exec_depend>rclpy</exec_depend>
-  <exec_depend>launch_ros</exec_depend>
-  <exec_depend>robot_state_publisher</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

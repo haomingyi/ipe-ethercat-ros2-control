@@ -17,6 +17,14 @@ if [[ -n "${forbidden_files}" ]]; then
   exit 1
 fi
 
+obsolete_pattern='(^|/)(docs/(legacy|vendor)|.*(copy|ORGIN|backup|old).*)($|/)'
+obsolete_files="$(git ls-files | grep -E -i "${obsolete_pattern}" || true)"
+if [[ -n "${obsolete_files}" ]]; then
+  echo "Obsolete snapshots or private reference files are tracked:" >&2
+  printf '%s\n' "${obsolete_files}" >&2
+  exit 1
+fi
+
 secret_pattern='gho_[[:alnum:]_]+|github_pat_[[:alnum:]_]+|BEGIN (RSA|OPENSSH|EC) PRIVATE KEY'
 secret_matches="$(git grep -n -E "${secret_pattern}" -- . ':(exclude)ipe/SOEM/**' || true)"
 if [[ -n "${secret_matches}" ]]; then
@@ -24,6 +32,21 @@ if [[ -n "${secret_matches}" ]]; then
   printf '%s\n' "${secret_matches}" >&2
   exit 1
 fi
+
+machine_paths="$(git grep -n -E '/home/[^/]+/|ipe_ehternet_master|ipe-ethercat-master-public' \
+  -- . ':(exclude)ipe/SOEM/**' ':(exclude)scripts/check_repository.sh' || true)"
+if [[ -n "${machine_paths}" ]]; then
+  echo "Workstation-specific absolute paths are tracked:" >&2
+  printf '%s\n' "${machine_paths}" >&2
+  exit 1
+fi
+
+for required in .env.example ipe/SOEM/LICENSE scripts/project_env.sh; do
+  if [[ ! -r "${required}" ]]; then
+    echo "Required portable-project file is missing: ${required}" >&2
+    exit 1
+  fi
+done
 
 echo "Repository boundary check passed."
 echo "Tracked files: $(git ls-files | wc -l)"
